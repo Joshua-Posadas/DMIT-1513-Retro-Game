@@ -11,6 +11,10 @@ public class Movement : MonoBehaviour
     [Header("Input Actions")]
     public InputAction movementInput;
 
+    [Header("Weapon Bobbing")]
+    public WeaponBob rightBob;
+    public WeaponBob leftBob;
+
     private CharacterController controller;
     private Vector2 moveVector;
     private Vector3 velocity;
@@ -29,6 +33,7 @@ public class Movement : MonoBehaviour
     {
         HandleMovement();
         HandleGravity();
+        HandleWeaponBob();
     }
 
     private void HandleMovement()
@@ -47,6 +52,18 @@ public class Movement : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
     }
+
+    private void HandleWeaponBob()
+    {
+        float moveMagnitude = moveVector.magnitude;
+
+        if (rightBob != null)
+            rightBob.UpdateBob(moveMagnitude);
+
+        if (leftBob != null)
+            leftBob.UpdateBob(moveMagnitude);
+    }
+
     public float GetCurrentSpeed()
     {
         return moveVector.magnitude;
