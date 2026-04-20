@@ -16,7 +16,6 @@ public class RaycastGun : MonoBehaviour
     public float reloadDuration = 0.5f;
     public Vector3 loweredPosition = new Vector3(0, -0.3f, 0);
     public AudioClip reloadSound;
-    public AudioSource audioSource;
 
     [Header("References")]
     public Camera fpsCamera;
@@ -25,6 +24,8 @@ public class RaycastGun : MonoBehaviour
     public MuzzleFlashLight lightFlash;
     public MuzzleFlashIMG imgFlash;
     public WeaponAudio weaponAudio;
+    public AudioSource audioSource;
+    public AudioClip emptyGunShotAudio;
 
     private float nextFireTime;
     private bool isReloading = false;
@@ -45,7 +46,14 @@ public class RaycastGun : MonoBehaviour
             return;
 
         if (currentAmmo <= 0)
+        {
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                if (audioSource != null && emptyGunShotAudio != null)
+                    audioSource.PlayOneShot(emptyGunShotAudio);
+            }
             return;
+        }
 
         if (Mouse.current.leftButton.isPressed && Time.time >= nextFireTime)
         {
