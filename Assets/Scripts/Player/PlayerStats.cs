@@ -33,15 +33,6 @@ public class PlayerStats : MonoBehaviour
         UpdateUI();
     }
 
-    // Damage Test Note: REMOVE AFTER ENEMY AI IS DONE
-    private void Update()
-    {
-        if (Keyboard.current.hKey.wasPressedThisFrame)
-        {
-            TakeDamage(10);
-        }
-    }
-
     public void TakeDamage(int amount)
     {
         if (isDead)

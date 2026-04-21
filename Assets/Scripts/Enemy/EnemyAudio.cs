@@ -2,9 +2,11 @@
 
 public class EnemyAudio : MonoBehaviour
 {
-    [Header("Audio Clips")]
     public AudioClip[] deathSounds;
     public AudioClip[] callouts;
+
+    public AudioClip shootSound;
+    public AudioClip reloadSound;
 
     private AudioSource source;
 
@@ -33,5 +35,23 @@ public class EnemyAudio : MonoBehaviour
 
         int index = Random.Range(0, deathSounds.Length);
         source.PlayOneShot(deathSounds[index]);
+    }
+
+    public void PlayShoot()
+    {
+        if (shootSound == null)
+            return;
+
+        source.pitch = 1f;
+        source.PlayOneShot(shootSound);
+    }
+
+    public void PlayReload()
+    {
+        if (reloadSound == null)
+            return;
+
+        source.pitch = 1f;
+        source.PlayOneShot(reloadSound);
     }
 }

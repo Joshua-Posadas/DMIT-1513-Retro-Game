@@ -10,7 +10,10 @@ public class AmmoPickup : MonoBehaviour
 
         if (gun != null)
         {
-            gun.currentAmmo = gun.magazineSize;
+            gun.currentAmmo = Mathf.Clamp(gun.currentAmmo + ammoAmount, 0, gun.magazineSize);
+
+            gun.PlayReloadAnimation();
+
             Destroy(gameObject);
         }
     }

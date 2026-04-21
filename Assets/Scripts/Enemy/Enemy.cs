@@ -107,6 +107,11 @@ public class Enemy : MonoBehaviour, IDamagable
         return isDead;
     }
 
+    public bool CanSeePlayer()
+    {
+        return hasCalledOut && !isDead;
+    }
+
     private IEnumerator DeathSequence()
     {
         isDead = true;
@@ -159,7 +164,7 @@ public class Enemy : MonoBehaviour, IDamagable
         RaycastGun gun = other.GetComponentInChildren<RaycastGun>();
         if (gun != null)
         {
-            gun.currentAmmo = gun.magazineSize;
+            gun.currentAmmo = Mathf.Clamp(gun.currentAmmo + 16, 0, gun.magazineSize);
             gun.PlayReloadAnimation();
 
             Collider trigger = GetComponent<Collider>();

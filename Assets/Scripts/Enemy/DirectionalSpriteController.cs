@@ -60,4 +60,9 @@ public class DirectionalSpriteController : MonoBehaviour
     {
         corpseMode = true;
     }
+
+    public bool IsFacingFront()
+    {
+        return sr.sprite == frontSprite;
+    }
 }
