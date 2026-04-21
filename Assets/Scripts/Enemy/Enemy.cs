@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class Enemy : MonoBehaviour, IDamagable
@@ -17,10 +17,70 @@ public class Enemy : MonoBehaviour, IDamagable
     private bool isInjured = false;
     private bool isDead = false;
     private bool corpseActive = false;
+    private bool hasCalledOut = false;
+
+    [Header("Detection Settings")]
+    public Transform player;
+    public float viewDistance = 10f;
+    public float viewAngle = 60f;
+    public float turnSpeed = 3f;
+
+    private EnemyAudio audioSource;
 
     private void Start()
     {
         currentHealth = maxHealth;
+        audioSource = GetComponent<EnemyAudio>();
+    }
+
+    private void Update()
+    {
+        if (!isDead)
+        {
+            DetectPlayer();
+            RotateTowardPlayer();
+        }
+    }
+
+    private void OnSeePlayer()
+    {
+        if (hasCalledOut)
+            return;
+
+        if (Random.value <= 0.75f && audioSource != null)
+            audioSource.PlayCallout();
+
+        hasCalledOut = true;
+    }
+
+    private void DetectPlayer()
+    {
+        if (hasCalledOut)
+            return;
+
+        Vector3 toPlayer = player.position - transform.position;
+        float distance = toPlayer.magnitude;
+
+        if (distance > viewDistance)
+            return;
+
+        float angle = Vector3.Angle(transform.forward, toPlayer.normalized);
+        if (angle > viewAngle * 0.5f)
+            return;
+
+        OnSeePlayer();
+    }
+
+    private void RotateTowardPlayer()
+    {
+        Vector3 direction = (player.position - transform.position);
+        direction.y = 0;
+
+        if (direction.sqrMagnitude < 0.01f)
+            return;
+
+        Quaternion targetRot = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * turnSpeed);
     }
 
     public void TakeDamage(float amount)
@@ -42,9 +102,16 @@ public class Enemy : MonoBehaviour, IDamagable
         }
     }
 
+    public bool IsDead()
+    {
+        return isDead;
+    }
+
     private IEnumerator DeathSequence()
     {
         isDead = true;
+        if (audioSource != null)
+            audioSource.PlayDeathSound();
 
         spriteController.EnterCorpseMode();
 

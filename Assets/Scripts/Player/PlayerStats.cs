@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,6 +17,9 @@ public class PlayerStats : MonoBehaviour
     public DamageFlash damageFlash;
 
     private Color defaultHealthColor;
+    private bool isDead = false;
+
+    private PlayerAudio playerAudio;
 
     private void Start()
     {
@@ -24,6 +27,8 @@ public class PlayerStats : MonoBehaviour
         currentArmor = 0;
 
         defaultHealthColor = healthText.color;
+
+        playerAudio = GetComponent<PlayerAudio>();
 
         UpdateUI();
     }
@@ -39,11 +44,19 @@ public class PlayerStats : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
+        if (isDead)
+            return;
+
+        int originalAmount = amount;
+
         if (currentArmor > 0)
         {
             int absorbed = Mathf.Min(currentArmor, amount);
             currentArmor -= absorbed;
             amount -= absorbed;
+
+            if (absorbed > 0 && playerAudio != null)
+                playerAudio.PlayArmorHit();
         }
 
         if (amount > 0)
@@ -51,11 +64,26 @@ public class PlayerStats : MonoBehaviour
             currentHealth -= amount;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
+            if (currentHealth > 0 && playerAudio != null)
+                playerAudio.PlayHurtSound();
+
             if (damageFlash != null)
                 damageFlash.TriggerFlash();
         }
 
         UpdateUI();
+        if (currentHealth <= 0)
+            Die();
+    }
+
+    private void Die()
+    {
+        if (isDead)
+            return;
+
+        isDead = true;
+        if (playerAudio != null)
+            playerAudio.PlayDeathSound();
     }
 
     public void UpdateUI()
