@@ -8,7 +8,7 @@ public class PlayerStats : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
 
-    public int maxArmor = 100;
+    public int maxArmor = 200;
     public int currentArmor;
 
     [Header("UI")]

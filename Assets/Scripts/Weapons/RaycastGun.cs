@@ -17,7 +17,7 @@ public class RaycastGun : MonoBehaviour
     public Vector3 loweredPosition = new Vector3(0, -0.3f, 0);
     public AudioClip reloadSound;
 
-    [Header("References")]
+    [Header("Right Uzi References")]
     public Camera fpsCamera;
     public Recoil cameraRecoil;
     public WeaponKickback weaponKick;
@@ -27,14 +27,22 @@ public class RaycastGun : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip emptyGunShotAudio;
 
+    [Header("Left Uzi References")]
+    public WeaponKickback leftWeaponKick;
+    public MuzzleFlashLight leftLightFlash;
+    public MuzzleFlashIMG leftImgFlash;
+    public WeaponAudio leftWeaponAudio;
+
     private float nextFireTime;
     private bool isReloading = false;
     private Vector3 originalLocalPos;
+    private PlayerWeapons weapons;
 
     private void Start()
     {
         currentAmmo = magazineSize;
         originalLocalPos = transform.localPosition;
+        weapons = GetComponentInParent<PlayerWeapons>();
     }
 
     private void Update()
@@ -59,7 +67,11 @@ public class RaycastGun : MonoBehaviour
         {
             nextFireTime = Time.time + fireRate;
             Shoot();
-            currentAmmo--;
+
+            if (weapons != null && weapons.hasDualUzi)
+                currentAmmo -= 2;
+            else
+                currentAmmo -= 1;
         }
     }
 
@@ -80,13 +92,32 @@ public class RaycastGun : MonoBehaviour
         if (weaponAudio != null)
             weaponAudio.PlayFire();
 
+        if (weapons != null && weapons.hasDualUzi)
+        {
+            if (leftWeaponKick != null)
+                leftWeaponKick.ApplyKick();
+
+            if (leftLightFlash != null)
+                leftLightFlash.TriggerFlash();
+
+            if (leftImgFlash != null)
+                leftImgFlash.TriggerFlash();
+
+            if (leftWeaponAudio != null)
+                leftWeaponAudio.PlayFire();
+        }
+
+        float finalDamage = (weapons != null && weapons.hasDualUzi)
+            ? damage * 2f
+            : damage;
+
         Ray ray = new Ray(fpsCamera.transform.position, fpsCamera.transform.forward);
 
         if (Physics.Raycast(ray, out RaycastHit hit, range))
         {
             IDamagable target = hit.collider.GetComponent<IDamagable>();
             if (target != null)
-                target.TakeDamage(damage);
+                target.TakeDamage(finalDamage);
         }
     }
 
