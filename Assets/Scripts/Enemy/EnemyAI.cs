@@ -176,11 +176,23 @@ public class EnemyAI : MonoBehaviour
     private bool Blocked(Vector3 pos, Vector3 move)
     {
         Vector3 origin = pos + Vector3.up * 1f;
-
         float checkDistance = move.magnitude + wallBuffer;
 
-        return Physics.Raycast(origin, move.normalized, checkDistance, wallMask);
+        if (Physics.Raycast(origin, move.normalized, out RaycastHit hit, checkDistance, wallMask))
+        {
+            Door door = hit.collider.GetComponent<Door>();
+            if (door != null)
+            {
+                if (!door.IsOpen())
+                    return true;
+                return false;
+            }
+            return true;
+        }
+
+        return false;
     }
+
 
     private void TryShoot()
     {

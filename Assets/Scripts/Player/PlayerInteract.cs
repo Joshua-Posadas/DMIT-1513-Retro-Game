@@ -8,7 +8,7 @@ public class PlayerInteract : MonoBehaviour
 
     void Update()
     {
-        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
             Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
             int mask = ~LayerMask.GetMask("Player");

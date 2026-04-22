@@ -8,13 +8,16 @@ public class AmmoPickup : MonoBehaviour
     {
         RaycastGun gun = other.GetComponentInChildren<RaycastGun>();
 
-        if (gun != null)
-        {
-            gun.currentAmmo = Mathf.Clamp(gun.currentAmmo + ammoAmount, 0, gun.magazineSize);
+        if (gun == null)
+            return;
 
-            gun.PlayReloadAnimation();
+        if (gun.currentAmmo >= gun.magazineSize)
+            return;
 
-            Destroy(gameObject);
-        }
+        gun.currentAmmo = Mathf.Clamp(gun.currentAmmo + ammoAmount, 0, gun.magazineSize);
+
+        gun.PlayReloadAnimation();
+
+        Destroy(gameObject);
     }
 }
