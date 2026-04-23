@@ -47,6 +47,9 @@ public class RaycastGun : MonoBehaviour
 
     private void Update()
     {
+        if (PauseController.IsPaused || PlayerStats.IsDead)
+            return;
+
         if (Mouse.current == null)
             return;
 
@@ -77,6 +80,9 @@ public class RaycastGun : MonoBehaviour
 
     private void Shoot()
     {
+        if (PauseController.IsPaused || PlayerStats.IsDead)
+            return;
+
         if (cameraRecoil != null)
             cameraRecoil.ApplyRecoil();
 

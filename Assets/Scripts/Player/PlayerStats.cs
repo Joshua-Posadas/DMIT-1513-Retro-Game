@@ -1,6 +1,5 @@
 ﻿using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerStats : MonoBehaviour
 {
@@ -18,6 +17,8 @@ public class PlayerStats : MonoBehaviour
 
     private Color defaultHealthColor;
     private bool isDead = false;
+
+    public static bool IsDead = false;
 
     private PlayerAudio playerAudio;
 
@@ -73,8 +74,14 @@ public class PlayerStats : MonoBehaviour
             return;
 
         isDead = true;
+        IsDead = true;
+
         if (playerAudio != null)
             playerAudio.PlayDeathSound();
+
+        GameOverController gameOver = FindFirstObjectByType<GameOverController>();
+        if (gameOver != null)
+            gameOver.ShowGameOver();
     }
 
     public void UpdateUI()

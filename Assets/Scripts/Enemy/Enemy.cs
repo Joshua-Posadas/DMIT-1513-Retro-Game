@@ -115,6 +115,8 @@ public class Enemy : MonoBehaviour, IDamagable
     private IEnumerator DeathSequence()
     {
         isDead = true;
+        KillCounter.Kills++;
+
         if (audioSource != null)
             audioSource.PlayDeathSound();
 

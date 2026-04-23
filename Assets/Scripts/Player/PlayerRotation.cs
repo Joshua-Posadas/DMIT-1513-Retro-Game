@@ -21,6 +21,9 @@ public class PlayerRotation : MonoBehaviour
 
     private void OnLook(InputAction.CallbackContext context)
     {
+        if (PauseController.IsPaused || PlayerStats.IsDead)
+            return;
+
         Vector2 mouseDelta = context.ReadValue<Vector2>();
 
         yaw += mouseDelta.x * sensitivity;
@@ -29,8 +32,10 @@ public class PlayerRotation : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (PauseController.IsPaused || PlayerStats.IsDead)
+            return;
+
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
         transform.localRotation = Quaternion.Euler(pitch, yaw, 0f);
     }
 }
-
