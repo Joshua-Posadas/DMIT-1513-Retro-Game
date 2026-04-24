@@ -14,7 +14,6 @@ public class EnemyAudio : MonoBehaviour
     {
         source = gameObject.AddComponent<AudioSource>();
         source.playOnAwake = false;
-        source.spatialBlend = 1f;
     }
 
     public void PlayCallout()
